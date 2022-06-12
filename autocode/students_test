@@ -1,7 +1,6 @@
 package coverage
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -148,24 +147,15 @@ func TestSet(t *testing.T){
 	testCases := []struct{
 		input *Matrix
 		row, col, value int
+		res *Matrix
 	}{
-		{&Matrix{3, 3, []int{1, 2, 3, 4, 5, 6, 7, 8, 9}}, 0, 0, 11},
-		{&Matrix{2, 3, []int{1, 2, 3, 4, 5, 6}}, 1, 1, 22},
+		{&Matrix{3, 3, []int{1, 2, 3, 4, 5, 6, 7, 8, 9}}, 0, 0, 11, &Matrix{3, 3, []int{11, 2, 3, 4, 5, 6, 7, 8, 9}} },
+		{&Matrix{2, 3, []int{1, 2, 3, 4, 5, 6}}, 1, 1, 22, &Matrix{2, 3, []int{1, 2, 3, 4, 22, 6}} },
+		{&Matrix{2, 3, []int{1, 2, 3, 4, 5, 6}}, 3, 3, 22, &Matrix{2, 3, []int{1, 2, 3, 4, 5, 6}} },
 	}
 
 	for _, val := range(testCases){
 		val.input.Set(val.row, val.col, val.value)
-		actual, _ := GetVal(val.input, val.row, val.col)
-		assert.Equal(t, val.value, actual)
+		assert.Equal(t, val.input, val.res)
 	}
-}
-
-func GetVal(m *Matrix, row, col int) (int, error) {
-
-	if row < 0 || m.rows <= row || col < 0 || m.cols <= col {
-		return 0, fmt.Errorf("index out of bound")
-	}
-
-	index := row*m.cols+col
-	return m.data[index], nil
 }
